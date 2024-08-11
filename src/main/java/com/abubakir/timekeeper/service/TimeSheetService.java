@@ -40,7 +40,8 @@ public class TimeSheetService {
     }
 
     private void validateDateNotInserted(LocalDateTime localDateTime) {
-        timeSheetRepository.findById(localDateTime.toString()).ifPresent(clockInEntity -> {throw new DuplicateRecordException();});
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
+        timeSheetRepository.findById(localDateTime.format(localDateTimeFormatter)).ifPresent(clockInEntity -> {throw new DuplicateRecordException();});
     }
 
     private void validateNewRecordIsAtLeastOneHourAfterLast(LocalDateTime localDateTime) {

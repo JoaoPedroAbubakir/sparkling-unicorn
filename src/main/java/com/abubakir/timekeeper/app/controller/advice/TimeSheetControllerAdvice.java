@@ -48,4 +48,11 @@ public class TimeSheetControllerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(DuplicateRecordException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleDuplicateRecordException(DuplicateRecordException e) {
+        ErrorResponse errorResponse = ErrorResponse.builder().message(e.getMessage()).build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
 }

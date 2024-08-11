@@ -42,6 +42,17 @@ public class TimeSheetControllerTest {
     }
 
     @Test
+    public void shouldReturnDuplicateRecord() {
+        String json = "{\"dataHora\": \"2024/10/09T10:00:00\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", entity, String.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Horários já registrado\"}");
+    }
+
+    @Test
     public void shouldReturnInvalidWorkingDay() {
         String json = "{\"dataHora\": \"2024/08/11T09:00:00\"}";
         HttpHeaders headers = new HttpHeaders();

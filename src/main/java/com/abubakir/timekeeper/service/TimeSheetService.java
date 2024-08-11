@@ -1,6 +1,7 @@
 package com.abubakir.timekeeper.service;
 
 import com.abubakir.timekeeper.app.dto.ClockInDTO;
+import com.abubakir.timekeeper.app.exception.DuplicateRecordException;
 import com.abubakir.timekeeper.app.exception.InvalidWorkingDayException;
 import com.abubakir.timekeeper.app.exception.MaximumRecordsForGivenDayException;
 import com.abubakir.timekeeper.app.exception.MinimumLunchTimeException;
@@ -26,10 +27,20 @@ public class TimeSheetService {
         DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(clockInDTO.getLocalDateTime(), localDateTimeFormatter);
         validateDayOfTheWeek(localDateTime.toLocalDate());
+        validateDateNotInserted(localDateTime);
         validateNumberOfRecordsForGivenDate(localDateTime.toLocalDate());
         validateIfLunch(localDateTime);
+        save(clockInDTO);
 
+    }
 
+    private void save(ClockInDTO clockInDTO) {
+        ClockInEntity entity = ClockInEntity.builder().localDateTimeString(clockInDTO.getLocalDateTime()).build();
+        timeSheetRepository.save(entity);
+    }
+
+    private void validateDateNotInserted(LocalDateTime localDateTime) {
+        timeSheetRepository.findById(localDateTime.toString()).ifPresent(clockInEntity -> {throw new DuplicateRecordException();});
     }
 
     private void validateNewRecordIsAtLeastOneHourAfterLast(LocalDateTime localDateTime) {

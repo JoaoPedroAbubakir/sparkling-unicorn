@@ -8,6 +8,7 @@ import com.abubakir.timekeeper.persistence.repository.TimeSheetRepository;
 import com.abubakir.timekeeper.service.repository.TimeSheetSimulatedDatabase;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class TimeSheetServiceTest {
 
@@ -23,7 +25,8 @@ public class TimeSheetServiceTest {
     @Before
     public void setUp() {
         TimeSheetRepository timeSheetRepository = new TimeSheetSimulatedDatabase();
-        timeSheetService = new TimeSheetService(timeSheetRepository);
+        KafkaTemplate<String, String> kafkaTemplate = mock(KafkaTemplate.class);
+        timeSheetService = new TimeSheetService(timeSheetRepository, kafkaTemplate);
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.abubakir.timekeeper.app.exception.MinimumLunchTimeException;
 import com.abubakir.timekeeper.persistence.entity.ClockInEntity;
 import com.abubakir.timekeeper.persistence.repository.TimeSheetRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -21,7 +22,8 @@ import java.util.*;
 @AllArgsConstructor
 public class TimeSheetService {
 
-    TimeSheetRepository timeSheetRepository;
+    private final TimeSheetRepository timeSheetRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void processTimeStamp(ClockInDTO clockInDTO) {
         DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
@@ -30,13 +32,13 @@ public class TimeSheetService {
         validateDateNotInserted(localDateTime);
         validateNumberOfRecordsForGivenDate(localDateTime.toLocalDate());
         validateIfLunch(localDateTime);
-        save(clockInDTO);
-
+        ClockInEntity save = save(clockInDTO);
+        kafkaTemplate.send("batidas", save.getLocalDateTimeString());
     }
 
-    private void save(ClockInDTO clockInDTO) {
+    private ClockInEntity save(ClockInDTO clockInDTO) {
         ClockInEntity entity = ClockInEntity.builder().localDateTimeString(clockInDTO.getLocalDateTime()).build();
-        timeSheetRepository.save(entity);
+        return timeSheetRepository.save(entity);
     }
 
     private void validateDateNotInserted(LocalDateTime localDateTime) {

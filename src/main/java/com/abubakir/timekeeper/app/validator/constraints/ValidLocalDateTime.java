@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LocalDateTimeValidator.class)
 public @interface ValidLocalDateTime {
-    String message() default "Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss";
+    String message() default "Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss";
 
     String pattern() default "yyyy/MM/dd'T'HH:mm:ss";
 

@@ -39,7 +39,7 @@ However, if you wish to change any variables here they are
 | `REDIS_PORT`                              | `6379`        | Port for Redis Service                         |
 
 
-They can be found on the [compose-dev.yaml](./compose-dev.yaml)
+Set these as default environment values on the IDE or Host Machine
 
 The [compose-prod.yaml](./compose-prod.yaml) will use the internal network, so this shouldn't be an issue
 

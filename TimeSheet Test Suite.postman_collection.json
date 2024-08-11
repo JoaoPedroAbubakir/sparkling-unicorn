@@ -1,0 +1,418 @@
+{
+	"info": {
+		"_postman_id": "667203f4-617c-49cb-aaa4-2693b0237ede",
+		"name": "TimeSheet Test Suite",
+		"description": "This collection features the following requests\n\n- **Post a full working day with four timestamps**\n    \n    - Just hit \"send\" 4 times\n        \n    - If you hit \"send\" the 5th time, it should return an error\n        \n- Check that the following errors are returned\n    \n    - No more than 4 timestamps can be posted for a day\n        \n    - Lunch break must be over 1 hour\n        \n    - No duplicate times can be posted\n        \n    - Cannot post a time on a weekend\n        \n    - Invalid timestamp format\n        \n    - Blank timestamp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7204498"
+	},
+	"item": [
+		{
+			"name": "Post Valid Timestamps",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let dataHoras = pm.collectionVariables.get(\"dataHoras\");\r",
+							"\r",
+							"if(!dataHoras || dataHoras.length == 0) {\r",
+							"    dataHoras = [\"2024-08-08T09:00:00\", \"2024-08-08T12:00:00\", \"2024-08-08T13:00:00\", \"2024-08-08T18:00:00\"];\r",
+							"}\r",
+							"\r",
+							"let currentDataHora = dataHoras.shift();\r",
+							"pm.collectionVariables.set(\"dataHora\", currentDataHora);\r",
+							"pm.collectionVariables.set(\"dataHoras\", dataHoras);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataHora\": \"{{dataHora}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Timestamp With Invalid Lunch",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let dataHoras = pm.collectionVariables.get(\"dataHoras\");\r",
+							"\r",
+							"if(!dataHoras || dataHoras.length == 0) {\r",
+							"    dataHoras = [\"2024-08-09T09:00:00\", \"2024-08-09T12:00:00\", \"2024-08-09T12:50:00\"];\r",
+							"}\r",
+							"\r",
+							"let currentDataHora = dataHoras.shift();\r",
+							"pm.collectionVariables.set(\"dataHora\", currentDataHora);\r",
+							"pm.collectionVariables.set(\"dataHoras\", dataHoras);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"pm.test(\"Should return specified error message\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('mensagem');\r",
+							"    pm.expect(pm.response.json().mensagem).to.be.a('string');\r",
+							"    pm.expect(pm.response.json().mensagem).to.eql('Deve haver no mínimo 1 hora de almoço');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataHora\": \"{{dataHora}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Timestamp With Weekend Day",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let dataHoras = pm.collectionVariables.get(\"dataHoras\");\r",
+							"\r",
+							"if(!dataHoras || dataHoras.length == 0) {\r",
+							"    dataHoras = [\"2024-08-10T09:00:00\", \"2024-08-11T12:00:00\"];\r",
+							"}\r",
+							"\r",
+							"let currentDataHora = dataHoras.shift();\r",
+							"pm.collectionVariables.set(\"dataHora\", currentDataHora);\r",
+							"pm.collectionVariables.set(\"dataHoras\", dataHoras);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"pm.test(\"Should return specified error message\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('mensagem');\r",
+							"    pm.expect(pm.response.json().mensagem).to.be.a('string');\r",
+							"    pm.expect(pm.response.json().mensagem).to.eql('Sábado e domingo não são permitidos como dia de trabalho');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataHora\": \"{{dataHora}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Timestamp With Blank Value",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Should return specified error message\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('mensagem');\r",
+							"    pm.expect(pm.response.json().mensagem).to.be.a('string');\r",
+							"    pm.expect(pm.response.json().mensagem).to.eql('Campo obrigatório não informado');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataHora\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Timestamp With Null Value",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"pm.test(\"Should return specified error message\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('mensagem');\r",
+							"    pm.expect(pm.response.json().mensagem).to.be.a('string');\r",
+							"    pm.expect(pm.response.json().mensagem).to.eql('Campo obrigatório não informado');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Timestamp With Invalid Timestamp",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let dataHoras = pm.collectionVariables.get(\"dataHoras\");\r",
+							"\r",
+							"if(!dataHoras || dataHoras.length == 0) {\r",
+							"    dataHoras = [\"2024-08-09T09:00:00\", \"2024-08-09T12:00:00\", \"2024-08-09T12:50:00\"];\r",
+							"}\r",
+							"\r",
+							"let currentDataHora = dataHoras.shift();\r",
+							"pm.collectionVariables.set(\"dataHora\", currentDataHora);\r",
+							"pm.collectionVariables.set(\"dataHoras\", dataHoras);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});\r",
+							"pm.test(\"Should return specified error message\", function() {\r",
+							"    pm.expect(pm.response.json()).to.have.property('mensagem');\r",
+							"    pm.expect(pm.response.json().mensagem).to.be.a('string');\r",
+							"    pm.expect(pm.response.json().mensagem).to.eql('Deve haver no mínimo 1 hora de almoço');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dataHora\": \"{{dataHora}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/batidas",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"batidas"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost:8080"
+		},
+		{
+			"key": "dataHora",
+			"value": ""
+		},
+		{
+			"key": "dataHoras",
+			"value": ""
+		}
+	]
+}

@@ -122,22 +122,22 @@ public class TimeSheetControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseMissingT, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseMonthDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseDayDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseTimeDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseLetterMixedUp, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseWrongFormatYearMissplaced, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: dd/MM/yyyy'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
     }
 
 }

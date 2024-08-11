@@ -31,21 +31,21 @@ public class TimeSheetControllerAdvice {
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleInvalidWorkingDayException(InvalidWorkingDayException e) {
         ErrorResponse errorResponse = ErrorResponse.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MaximumRecordsForGivenDayException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleInvalidWorkingDayException(MaximumRecordsForGivenDayException e) {
         ErrorResponse errorResponse = ErrorResponse.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MinimumLunchTimeException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleInvalidWorkingDayException(MinimumLunchTimeException e) {
         ErrorResponse errorResponse = ErrorResponse.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
 }

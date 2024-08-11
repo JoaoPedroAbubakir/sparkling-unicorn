@@ -42,6 +42,14 @@ public class TimeSheetControllerTest {
     }
 
     @Test
+    public void shouldReturnInvalidWorkingDay() {
+        String json = "{\"dataHora\": \"2024/08/11T09:00:00\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+    }
+
+    @Test
     public void shouldReturnBadRequestWithBlankParameterMessage() {
         String invalidBlankJson = "{}";
         String invalidBlankDateTime = "{\"dataHora\": \"\"}";

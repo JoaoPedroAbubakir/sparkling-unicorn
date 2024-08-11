@@ -1,5 +1,10 @@
 spring:
+  profiles:
+    active:
+      - dev
   application:
     name: "timekeeper"
+  main:
+    allow-bean-definition-overriding: true
 server:
   port: 8080

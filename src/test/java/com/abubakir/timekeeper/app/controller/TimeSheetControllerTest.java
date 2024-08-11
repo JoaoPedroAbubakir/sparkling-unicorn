@@ -15,6 +15,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Import(TestBeanConfiguration.class)
 @ContextConfiguration(classes = TestBeanConfiguration.class)
-@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 @DirtiesContext
+@TestPropertySource(properties = {
+        "spring.kafka.bootstrap-servers.host=localhost",
+        "spring.kafka.bootstrap-servers.port=9092",
+        "spring.kafka.custom.topic=test-topic"
+})
+@EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 public class TimeSheetControllerTest {
 
     @LocalServerPort

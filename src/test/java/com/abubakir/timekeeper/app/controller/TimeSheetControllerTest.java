@@ -43,7 +43,7 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldCreate() {
-        String json = "{\"dataHora\": \"2024/08/12T09:00:00\"}";
+        String json = "{\"dataHora\": \"2024-08-12T09:00:00\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
@@ -53,7 +53,7 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldReturnDuplicateRecord() {
-        String json = "{\"dataHora\": \"2024/10/09T10:00:00\"}";
+        String json = "{\"dataHora\": \"2024-10-09T10:00:00\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
@@ -64,7 +64,7 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldReturnInvalidWorkingDay() {
-        String json = "{\"dataHora\": \"2024/08/11T09:00:00\"}";
+        String json = "{\"dataHora\": \"2024-08-11T09:00:00\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
@@ -75,7 +75,7 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldReturnLunchTimeError() {
-        String json = "{\"dataHora\": \"2024/10/09T12:50:00\"}";
+        String json = "{\"dataHora\": \"2024-10-09T12:50:00\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
@@ -86,7 +86,7 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldReturnMaximumRecordsAllowed() {
-        String json = "{\"dataHora\": \"2024/10/08T19:00:00\"}";
+        String json = "{\"dataHora\": \"2024-10-08T19:00:00\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
@@ -112,32 +112,32 @@ public class TimeSheetControllerTest {
 
     @Test
     public void shouldReturnBadRequestWhenInvalidFormatIsProvided() {
-        String invalidBecauseMissingT = "{\"dataHora\": \"2024/08/10 14:30:20\"}";
-        String invalidBecauseMonthDoesNotExist = "{\"dataHora\": \"2024/20/10 14:30:20\"}";
-        String invalidBecauseDayDoesNotExist = "{\"dataHora\": \"2024/08/54 14:30:20\"}";
-        String invalidBecauseTimeDoesNotExist = "{\"dataHora\": \"2024/08/10 34:30:20\"}";
-        String invalidBecauseLetterMixedUp = "{\"dataHora\": \"2024/0i/10 14:30:20\"}";
-        String invalidBecauseWrongFormatYearMissplaced = "{\"dataHora\": \"10/08/2024 14:30:20\"}";
+        String invalidBecauseMissingT = "{\"dataHora\": \"2024-08-10 14:30:20\"}";
+        String invalidBecauseMonthDoesNotExist = "{\"dataHora\": \"2024-20-10 14:30:20\"}";
+        String invalidBecauseDayDoesNotExist = "{\"dataHora\": \"2024-08-54 14:30:20\"}";
+        String invalidBecauseTimeDoesNotExist = "{\"dataHora\": \"2024-08-10 34:30:20\"}";
+        String invalidBecauseLetterMixedUp = "{\"dataHora\": \"2024-0i-10 14:30:20\"}";
+        String invalidBecauseWrongFormatYearMissplaced = "{\"dataHora\": \"10-08-2024 14:30:20\"}";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseMissingT, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseMonthDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseDayDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseTimeDoesNotExist, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseLetterMixedUp, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
         responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", new HttpEntity<>(invalidBecauseWrongFormatYearMissplaced, headers), String.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy/MM/dd'T'HH:mm:ss\"}");
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Data e hora em formato inválido, confira se o formato segue: yyyy-MM-dd'T'HH:mm:ss\"}");
     }
 
 }

@@ -26,7 +26,7 @@ public class TimeSheetService {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void processTimeStamp(ClockInDTO clockInDTO) {
-        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(clockInDTO.getLocalDateTime(), localDateTimeFormatter);
         validateDayOfTheWeek(localDateTime.toLocalDate());
         validateDateNotInserted(localDateTime);
@@ -42,13 +42,13 @@ public class TimeSheetService {
     }
 
     private void validateDateNotInserted(LocalDateTime localDateTime) {
-        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
+        DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         timeSheetRepository.findById(localDateTime.format(localDateTimeFormatter)).ifPresent(clockInEntity -> {throw new DuplicateRecordException();});
     }
 
     private void validateNewRecordIsAtLeastOneHourAfterLast(LocalDateTime localDateTime) {
         List<ClockInEntity> timesForGivenDay = getTimesForGivenDay(localDateTime.toLocalDate());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalTime nextTime = localDateTime.toLocalTime();
         ClockInEntity lastClockIn = timesForGivenDay.get(timesForGivenDay.size() - 1);
         LocalTime lastTime = LocalTime.parse(lastClockIn.getLocalDateTimeString(), formatter);
@@ -69,7 +69,7 @@ public class TimeSheetService {
     }
 
     private static Map<LocalDate, List<ClockInEntity>> splitByDay(Iterable<ClockInEntity> clockInEntities) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         Map<LocalDate, List<ClockInEntity>> groupedByDate = new HashMap<>();
         for (ClockInEntity clockInEntity : clockInEntities) {
             LocalDateTime localDateTime = LocalDateTime.parse(clockInEntity.getLocalDateTimeString(), formatter);

@@ -31,40 +31,40 @@ public class TimeSheetServiceTest {
 
     @Test
     public void shouldThrowMaximumRecordsException() {
-        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024/10/08T00:00:00").build();
+        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024-10-08T00:00:00").build();
         assertThrows(MaximumRecordsForGivenDayException.class, () -> timeSheetService.processTimeStamp(clockInDTO));
     }
 
     @Test
     public void shouldThrowMinimumLunchTimeException() {
-        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024/10/09T12:50:00").build();
+        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024-10-09T12:50:00").build();
         assertThrows(MinimumLunchTimeException.class, () -> timeSheetService.processTimeStamp(clockInDTO));
     }
 
     @Test
     public void shouldAllowForCreation() {
-        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024/10/09T13:00:00").build();
+        ClockInDTO clockInDTO = ClockInDTO.builder().localDateTime("2024-10-09T13:00:00").build();
         assertThatNoException().isThrownBy(() -> timeSheetService.processTimeStamp(clockInDTO));
     }
 
     @Test
     public void shouldReturn4() {
-        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024/10/08", localDateFormatter));
+        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024-10-08", localDateFormatter));
         assertThat(count).isEqualTo(4);
     }
 
     @Test
     public void shouldReturn2() {
-        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024/10/09", localDateFormatter));
+        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024-10-09", localDateFormatter));
         assertThat(count).isEqualTo(2);
     }
 
     @Test
     public void shouldReturnEmptyAndNotBreak() {
-        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024/10/20", localDateFormatter));
+        DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        int count = timeSheetService.checkHowManyTimesWereLoggedInADay(LocalDate.parse("2024-10-20", localDateFormatter));
         assertThat(count).isZero();
     }
 }

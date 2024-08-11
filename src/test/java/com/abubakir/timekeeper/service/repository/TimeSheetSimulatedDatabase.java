@@ -24,15 +24,15 @@ public class TimeSheetSimulatedDatabase implements TimeSheetRepository {
 
     private void populate() {
         //This should be a "valid" day
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/08T09:00:00").build());
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/08T12:00:00").build());
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/08T13:00:00").build());
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/08T18:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-08T09:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-08T12:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-08T13:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-08T18:00:00").build());
 
         //These should help with some tests, I really should move this class over
         //By the way, next record for this day should follow the lunch rule
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/09T10:00:00").build());
-        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024/10/09T12:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-09T10:00:00").build());
+        clockInEntities.add(ClockInEntity.builder().localDateTimeString("2024-10-09T12:00:00").build());
     }
 
     @Override

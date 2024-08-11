@@ -47,6 +47,31 @@ public class TimeSheetControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", entity, String.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Sábado e domingo não são permitidos como dia de trabalho\"}");
+    }
+
+    @Test
+    public void shouldReturnLunchTimeError() {
+        String json = "{\"dataHora\": \"2024/10/09T12:50:00\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", entity, String.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Deve haver no mínimo 1 hora de almoço\"}");
+    }
+
+    @Test
+    public void shouldReturnMaximumRecordsAllowed() {
+        String json = "{\"dataHora\": \"2024/10/08T19:00:00\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("http://localhost:" + port + "/batidas", entity, String.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(responseEntity.getBody()).contains("{\"mensagem\":\"Apenas 4 horários podem ser registrados por dia\"}");
     }
 
     @Test
